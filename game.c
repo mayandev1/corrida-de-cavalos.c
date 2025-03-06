@@ -27,7 +27,8 @@ void upgrade(Cavalo *cavalo, int *saldo){
     int custo = 20 + cavalo->experiencia * 10;
 
     if (*saldo < custo){
-        printf("Saldo insuficiente, upgrade indisponivel!");
+        printf("Saldo insuficiente, upgrade indisponivel!\n");
+        sleep(3);
         return;
     }
 
@@ -37,8 +38,36 @@ void upgrade(Cavalo *cavalo, int *saldo){
     cavalo->probabilidade_impulso += 0.05;
     cavalo->experiencia += 1;
 
-    printf("Melhoria concluída!\n Velocidade: %.1f | Resistencia: %1.f | Impulso: %.2f%% | Exp: %d\n",
+    printf("Melhoria concluida!\nVelocidade: %.1f | Resistencia: %.1f | Impulso: %.2f%% | Exp: %d\n",
          cavalo->velocidade, cavalo->resistencia, cavalo->probabilidade_impulso, cavalo->experiencia);
+    sleep(4);
+}
+
+void exibirMenu(int saldo){
+    system("cls");
+    printf("+===============================+");
+    printf("\nSeu saldo atual: $%d\n", saldo);
+    printf("Escolha uma opcao:\n");
+    printf("1 - Apostar em uma corrida\n");
+    printf("2 - Melhorar um cavalo\n");
+    printf("3 - Tabela dos Cavalos\n");
+    printf("4 - Sair\n");
+    printf("+===============================+\n");
+    printf("Digite a opcao: ");
+}
+
+void exibirTabela(Cavalo cavalos[]){
+    system("cls");
+    printf("                                 TABELA DE CAVALOS  \n");
+    printf("+================================================================================+\n");
+    for (int i = 0; i < NUM_CAVALOS; i++){
+        printf("Cavalo %d - Velocidade: %.1f | Resistencia: %.1f | Impulso: %.2f%% | Experiencia: %d\n",
+            cavalos[i].numero, cavalos[i].velocidade, cavalos[i].resistencia, cavalos[i].probabilidade_impulso * 100, cavalos[i].experiencia);
+        }
+    printf("+================================================================================+");
+    printf("\nPressione qualquer tecla para voltar ao menu principal...");
+    getchar();  
+    getchar();      
 }
 
 int main(){
@@ -47,7 +76,7 @@ int main(){
     Cavalo cavalos[NUM_CAVALOS];
     float odds[NUM_CAVALOS] = {2.5, 3.0, 1.8, 4.5, 2.2};
     int saldo = 100, aposta, escolha;
-    
+
     for (int i = 0; i < NUM_CAVALOS; i++){
         cavalos[i].numero = i + 1; 
         cavalos[i].posicao = 0; 
@@ -58,19 +87,19 @@ int main(){
     }
 
     while (saldo > 0){
-        
-        
-        printf("\nSeu saldo atual: $%d\n", saldo);
-        printf("Escolha uma opcao:\n1 - Apostar em uma corrida\n2 - Melhorar um cavalo\nDigite: ");
-        int opcao;
-        scanf("%d", &opcao);
+        exibirMenu(saldo);
+        scanf("%d", &escolha);
 
-        if (opcao == 2){
+        if (escolha == 4) break;
+
+        if (escolha == 2){
+            system("cls");
             printf("Escolha um cavalo para melhorar:\n");
             for (int i = 0; i < NUM_CAVALOS; i++){
-                printf("%d - Cavalo %d (Velocidade: %.1f | Resistencia: %1.f | Impulso: %.2f%% | Exp: %d\n)",
+                printf("%d - Cavalo %d (Velocidade: %.1f | Resistencia: %.1f | Impulso: %.2f%% | Exp: %d\n",
                 i + 1, cavalos[i].numero, cavalos[i].velocidade, cavalos[i].resistencia, cavalos[i].probabilidade_impulso * 100, cavalos[i].experiencia);
             }
+            printf("Digite a opcao do cavalo: ");
             scanf("%d", &escolha);
             escolha--;
 
@@ -79,8 +108,13 @@ int main(){
             }
             continue;
         }
-        
-        printf("Escolha um cavalo para apostar:\n");
+
+        if (escolha == 3){
+            exibirTabela(cavalos);
+            continue;
+        }
+
+        system("cls");
         for (int i = 0; i < NUM_CAVALOS; i++){
             printf("%d - Cavalo %d (Odds: %.1f)\n", i + 1, cavalos[i].numero, odds[i]);
         }
@@ -114,11 +148,11 @@ int main(){
                     cavalos[i].posicao -= 2;
                     sleep(1);
                     if (cavalos[i].posicao < 0) cavalos[i].posicao = 0;
-                } else if (evento < 15){
+                } else if (evento < 10){
                     printf("O Cavalo %d disparou na frente!\n", cavalos[i].numero);
                     cavalos[i].posicao += 5;
                     sleep(1);
-                } else if (evento < 25 && cavalos[i].resistencia < 0.7 ){
+                } else if (evento < 15 && cavalos[i].resistencia < 0.7 ){
                     printf("O Cavalo %d esta cansado e reduziu a velociade!\n", cavalos[i].numero);
                     cavalos[i].velocidade -= 0.5;
                     sleep(1);
@@ -158,7 +192,10 @@ int main(){
         if (!continuar) break;
     }
 
-    if (saldo <= 0) printf("VOCE PERDEU TUDO O QUE TINHA!\n");
+    if (saldo <= 0){
+        system("cls");
+        printf("VOCE PERDEU TUDO O QUE TINHA!\n");
+    } 
     printf("Jogo encerrado. Seu saldo final: $%d\n", saldo);
     return 0; 
 }
