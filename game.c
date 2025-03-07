@@ -113,27 +113,34 @@ int main(){
             exibirTabela(cavalos);
             continue;
         }
-
         system("cls");
+        printf("+====================================+\n");
+        printf("|        SELECIONE SEU CAVALO        |\n");
+        printf("+====================================+\n");
         for (int i = 0; i < NUM_CAVALOS; i++){
-            printf("%d - Cavalo %d (Odds: %.1f)\n", i + 1, cavalos[i].numero, odds[i]);
+            printf("| %d - Cavalo %d (Odds: %.1f)        |\n", i + 1, cavalos[i].numero, odds[i]);
         }
+        printf("+====================================+\n");
 
-        while (escolha > 5){
-            printf("Digite o numero do cavalo: ");
+        do{
+            printf("Escolha um cavalo para apostar (1-%d): ", NUM_CAVALOS);
             scanf("%d", &escolha);
-            if (escolha > 5) printf("Numero invalido!\n");
-        }
-        escolha--;
-        
-        printf("Digite o valor da aposta: ");
-        scanf("%d", &aposta);
-        
-        if (aposta > saldo || aposta <= 0){
-            printf("Aposta Invalida!\n");
-            continue;
-        }
-        
+
+            if(escolha < 1 || escolha > NUM_CAVALOS){
+                printf("Numero invalido! Tente novamente.\n");
+            }
+        }while(escolha < 1 || escolha > NUM_CAVALOS);
+        escolha--; 
+
+        do{
+            printf("Digite o valor da aposta: ");
+            scanf("%d", &aposta);
+
+            if(aposta <= 0 || aposta > saldo){
+                printf("Aposta invalida! Insira um valor entre 1 e %d.\n", saldo);
+            }
+        }while(aposta <= 0 || aposta > saldo);
+
         for (int i = 0; i < NUM_CAVALOS; i++){
             cavalos[i].numero = i + 1;
         }
